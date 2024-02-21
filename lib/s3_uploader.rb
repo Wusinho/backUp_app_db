@@ -1,9 +1,13 @@
 require 'aws-sdk-s3'
 
 class S3Uploader
-  def initialize(bucket, region)
+  def initialize(bucket, region, access_key_id, secret_access_key)
     @bucket = bucket
-    @s3 = Aws::S3::Resource.new(region: region)
+    Aws.config.update({
+                        region: region,
+                        credentials: Aws::Credentials.new(access_key_id, secret_access_key)
+                      })
+    @s3 = Aws::S3::Resource.new
   end
 
   def upload(file_path)
