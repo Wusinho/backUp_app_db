@@ -1,0 +1,45 @@
+name: 'Reusable Database and App Backup'
+description: 'Backup database and application directory, then upload to AWS S3'
+inputs:
+  db_name:
+    description: 'Database name'
+    required: true
+  db_user:
+    description: 'Database user'
+    required: true
+  db_password:
+    description: 'Database password'
+    required: true
+  db_host:
+    description: 'Database host'
+    required: true
+  app_dir:
+    description: 'Application directory path'
+    required: true
+  backup_dir:
+    description: 'Backup directory path'
+    required: true
+  s3_bucket:
+    description: 'AWS S3 bucket name'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - run: |
+        DATE=$(date +%Y-%m-%d)
+        DB_BACKUP_FILENAME="db_backup_$DATE.sql"
+        APP_BACKUP_FILENAME="app_backup_$DATE.tar.gz"
+
+        mkdir -p "${{ inputs.backup_dir }}"
+
+        export PGPASSWORD="${{ inputs.db_password }}"
+        pg_dump -h "${{ inputs.db_host }}" -U "${{ inputs.db_user }}" "${{ inputs.db_name }}" > "${{ inputs.backup_dir }}/$DB_BACKUP_FILENAME"
+
+        tar -czvf "${{ inputs.backup_dir }}/$APP_BACKUP_FILENAME" "${{ inputs.app_dir }}"
+
+        aws s3 cp "${{ inputs.backup_dir }}/$DB_BACKUP_FILENAME" "s3://${{ inputs.s3_bucket }}/$DB_BACKUP_FILENAME"
+        aws s3 cp "${{ inputs.backup_dir }}/$APP_BACKUP_FILENAME" "s3://${{ inputs.s3_bucket }}/$APP_BACKUP_FILENAME"
+
+        rm "${{ inputs.backup_dir }}/$DB_BACKUP_FILENAME"
+        rm "${{ inputs.backup_dir }}/$APP_BACKUP_FILENAME"
+      shell: bash
