@@ -1,5 +1,5 @@
 name: 'Reusable Database and App Backup'
-description: 'Backup database and application directory, then upload to AWS S3'
+description: 'Backup database and application directory, then upload to AWS S3 or save locally'
 inputs:
   db_name:
     description: 'Database name'
@@ -20,11 +20,15 @@ inputs:
     description: 'Backup directory path'
     required: true
   s3_bucket:
-    description: 'AWS S3 bucket name'
-    required: true
+    description: 'AWS S3 bucket name (required if using S3)'
+    required: false
   s3_region:
-    description: 'AWS S3 Region'
+    description: 'AWS S3 Region (required if using S3)'
+    required: false
+  backup_destination:
+    description: 'Backup destination ("s3" for AWS S3, "local" for local storage)'
     required: true
+    default: 'local'
 runs:
   using: 'docker'
   image: 'Dockerfile'
