@@ -40,9 +40,6 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Run Backup
         uses: Wusinho/reusable-backup-action@main
         with:
@@ -52,6 +49,7 @@ jobs:
           db_host: ${{ secrets.DB_HOST }}
           app_dir: './path/to/your/app' # Adjust as necessary
           backup_dir: '/tmp/backup' # Temporary local directory for backup files
-          s3_bucket: ${{ secrets.S3_BUCKET }}
-          s3_region: ${{ secrets.S3_REGION }}
+          backup_destination: 'aws' or 'local' # you can choose to save it to a AWS bucketlist or locally
+          s3_bucket: ${{ secrets.S3_BUCKET }} # if backup_destination == 'aws'
+          s3_region: ${{ secrets.S3_REGION }} # if backup_destination == 'aws'
 ```
