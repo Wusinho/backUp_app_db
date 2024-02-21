@@ -44,7 +44,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run Backup
-        uses: your-username/reusable-backup-action@main
+        uses: Wusinho/reusable-backup-action@main
         with:
           db_name: ${{ secrets.DB_NAME }}
           db_user: ${{ secrets.DB_USER }}
