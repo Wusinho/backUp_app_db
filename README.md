@@ -41,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Backup
-        uses: Wusinho/reusable-backup-action@main
+        uses: Wusinho/backUp_app_db@main
         with:
           db_name: ${{ secrets.DB_NAME }}
           db_user: ${{ secrets.DB_USER }}
